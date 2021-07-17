@@ -37,6 +37,7 @@
 #include "rtp/PliPriorityHandler.h"
 #include "rtp/PliPacerHandler.h"
 #include "rtp/RtpPaddingGeneratorHandler.h"
+#include "rtp/StreamSwitchHandler.h"
 #include "rtp/RtpUtils.h"
 #include "rtp/PacketCodecParser.h"
 
@@ -457,6 +458,7 @@ void MediaStream::initializePipeline() {
   addHandlerInPosition(AFTER_READER, handler_pointer_dic, handler_order);
   pipeline_->addFront(std::make_shared<RtcpProcessorHandler>());
   pipeline_->addFront(std::make_shared<FecReceiverHandler>());
+  pipeline_->addFront(std::make_shared<StreamSwitchHandler>());
   pipeline_->addFront(std::make_shared<LayerBitrateCalculationHandler>());
   pipeline_->addFront(std::make_shared<QualityFilterHandler>());
   pipeline_->addFront(std::make_shared<IncomingStatsHandler>());

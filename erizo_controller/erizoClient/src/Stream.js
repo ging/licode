@@ -400,7 +400,8 @@ const Stream = (altConnectionHelpers, specInput) => {
         that.player = player;
         that.showing = true;
       }
-    } else if (nativeStreamContainsAudio && that.hasAudio()) {
+    }
+    if (nativeStreamContainsAudio && that.hasAudio()) {
       player = AudioPlayer({ id: that.getID(),
         stream: that,
         elementID,

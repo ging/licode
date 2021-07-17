@@ -3,6 +3,9 @@
 #include <cmath>
 #include <memory>
 
+#include "RtpExtensionProcessor.h"
+#include "rtp/RtpHeaders.h"
+
 namespace erizo {
 
 
@@ -179,8 +182,7 @@ std::shared_ptr<DataPacket> RtpUtils::makePaddingPacket(std::shared_ptr<DataPack
   return padding_packet;
 }
 
-std::shared_ptr<DataPacket> RtpUtils::makeVP8BlackKeyframePacket(std::shared_ptr<DataPacket> packet) {
-  uint8_t vp8_keyframe[] = {
+uint8_t vp8_keyframe[] = {
     (uint8_t) 0x90, (uint8_t) 0xe0, (uint8_t) 0x80, (uint8_t) 0x01,  // payload header 1
     (uint8_t) 0x00, (uint8_t) 0x20, (uint8_t) 0x10, (uint8_t) 0x0f,  // payload header 2
     (uint8_t) 0x00, (uint8_t) 0x9d, (uint8_t) 0x01, (uint8_t) 0x2a,
@@ -218,6 +220,7 @@ std::shared_ptr<DataPacket> RtpUtils::makeVP8BlackKeyframePacket(std::shared_ptr
     (uint8_t) 0xfe, (uint8_t) 0xef, (uint8_t) 0xb9, (uint8_t) 0x00
   };
 
+std::shared_ptr<DataPacket> RtpUtils::makeVP8BlackKeyframePacket(std::shared_ptr<DataPacket> packet) {
   uint16_t keyframe_length = sizeof(vp8_keyframe)/sizeof(vp8_keyframe[0]);
   erizo::RtpHeader *header = reinterpret_cast<RtpHeader*>(packet->data);
   const uint16_t packet_length = header->getHeaderLength() + keyframe_length;
@@ -231,8 +234,19 @@ std::shared_ptr<DataPacket> RtpUtils::makeVP8BlackKeyframePacket(std::shared_ptr
   std::shared_ptr<DataPacket> keyframe_packet =
     std::make_shared<DataPacket>(packet->comp, packet_buffer, packet_length, packet->type);
   keyframe_packet->is_keyframe = true;
+
+  keyframe_packet->picture_id = packet->picture_id;
+  keyframe_packet->tl0_pic_idx = packet->tl0_pic_idx;
   keyframe_packet->rid = packet->rid;
   keyframe_packet->mid = packet->mid;
+  keyframe_packet->priority = packet->priority;
+  keyframe_packet->received_time_ms = packet->received_time_ms;
+  keyframe_packet->compatible_spatial_layers = packet->compatible_spatial_layers;
+  keyframe_packet->compatible_temporal_layers = packet->compatible_spatial_layers;
+  keyframe_packet->ending_of_layer_frame = true;
+  keyframe_packet->codec = packet->codec;
+  keyframe_packet->clock_rate = packet->clock_rate;
+  keyframe_packet->is_padding = packet->is_padding;
 
   return keyframe_packet;
 }

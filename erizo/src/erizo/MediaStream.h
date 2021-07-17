@@ -31,6 +31,15 @@
 
 namespace erizo {
 
+class MediaStreamSwitchEvent : public MediaEvent {
+ public:
+  MediaStreamSwitchEvent() {}
+
+  std::string getType() const override {
+    return "MediaStreamSwitchEvent";
+  }
+};
+
 class MediaStreamStatsListener {
  public:
     virtual ~MediaStreamStatsListener() {
