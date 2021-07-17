@@ -21,6 +21,7 @@
     "EcCloudHandler": "INFO",
     "PerformanceStats": "INFO",
     "Publisher": "INFO",
+    "Node": "INFO",
     "Subscriber": "INFO",
     "Room": "INFO",
     "RoomController": "INFO",
